@@ -40,9 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let customNav = CustomNavController(rootViewController: notesController)
         
         window?.rootViewController = customNav
-        
-        
-        
+  
         return true
     }
 

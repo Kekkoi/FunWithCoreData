@@ -40,28 +40,29 @@ extension NotesController {
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, indexPath) in
-            let noteToBeDeleted = self.notes[indexPath.row]
-
-            self.notes.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .middle)
-            
-            let context = CoreDataManager.shared.persistentContainer.viewContext
-            
-            context.delete(noteToBeDeleted)
-            
-            do {
-                try context.save()
-            } catch let err {
-                print("Failed to delete", err)
-            }
-            
-        }
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete", handler: deleteRowFunc)
         
         let editAction = UITableViewRowAction(style: .normal, title: "Edit", handler: editRowFunc)
         
         editAction.backgroundColor = .customBlue
         return [deleteAction, editAction]
+    }
+    
+    func deleteRowFunc(action: UITableViewRowAction, indexPath: IndexPath) {
+        let noteToBeDeleted = self.notes[indexPath.row]
+        
+        self.notes.remove(at: indexPath.row)
+        self.tableView.deleteRows(at: [indexPath], with: .middle)
+        
+        let context = CoreDataManager.shared.persistentContainer.viewContext
+        
+        context.delete(noteToBeDeleted)
+        
+        do {
+            try context.save()
+        } catch let err {
+            print("Failed to delete", err)
+        }
     }
     
     

@@ -14,13 +14,16 @@ protocol CreateNoteDelegate {
 import UIKit
 import CoreData
 
-class AddNotesController: UIViewController {
+class AddNotesController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     var delegate: CreateNoteDelegate?
     
     var note: UserNote? {
         didSet {
             noteText.text = note?.noteText
+            if let imgData = note?.noteImage {
+                uploadedImageView.image = UIImage(data: imgData)
+            }
             
         }
     }
@@ -41,13 +44,22 @@ class AddNotesController: UIViewController {
         return backView
     }()
     
+   lazy var uploadedImageView: UIImageView = {
+        let imageView = UIImageView(image: #imageLiteral(resourceName: "accImage"))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoSelection)))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(exitController))
         
-          navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNote))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNote))
         
         view.backgroundColor = .yellow
         
@@ -61,12 +73,12 @@ class AddNotesController: UIViewController {
         } else {
             navigationItem.title = "Add a Note"
         }
-        
     }
     
     func setupElements() {
         view.addSubview(backgroundView)
         view.addSubview(noteText)
+        view.addSubview(uploadedImageView)
         
         backgroundView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         backgroundView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
@@ -77,6 +89,11 @@ class AddNotesController: UIViewController {
         noteText.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15).isActive = true
         noteText.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -15).isActive = true
         noteText.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        uploadedImageView.topAnchor.constraint(equalTo: noteText.bottomAnchor, constant: 15).isActive = true
+        uploadedImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        uploadedImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        uploadedImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
     }
     
     @objc func exitController() {
@@ -89,8 +106,6 @@ class AddNotesController: UIViewController {
         } else {
             saveEditedNote()
         }
-      
-        
     }
     
     
@@ -102,6 +117,11 @@ class AddNotesController: UIViewController {
         
         note.setValue(noteText, forKey: "noteText")
         note.setValue(Date(), forKey: "addedDate")
+        if let userImage = uploadedImageView.image {
+            let imgData = UIImageJPEGRepresentation(userImage, 0.7)
+            note.setValue(imgData, forKey: "noteImage")
+        }
+        
         
         do {
             try context.save()
@@ -120,6 +140,10 @@ class AddNotesController: UIViewController {
         
         note?.noteText = noteText
         note?.addedDate = Date()
+        if let userImage = uploadedImageView.image {
+            let imgData = UIImageJPEGRepresentation(userImage, 0.7)
+            note?.noteImage = imgData
+        }
         
         do {
             try context.save()
@@ -129,6 +153,25 @@ class AddNotesController: UIViewController {
         } catch let error {
             print("Failed to save edit", error)
         }
-
     }
+    
+    @objc func handlePhotoSelection() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        present(imagePickerController, animated: true)
+        
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let originImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            uploadedImageView.image = originImage
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
 }
