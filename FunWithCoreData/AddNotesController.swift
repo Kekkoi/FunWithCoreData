@@ -49,7 +49,6 @@ class AddNotesController: UIViewController, UINavigationControllerDelegate, UIIm
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoSelection)))
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
