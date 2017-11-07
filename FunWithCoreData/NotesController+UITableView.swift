@@ -15,7 +15,6 @@ extension NotesController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellID", for: indexPath) as! NotesCell
         let note = notes[indexPath.row]
         cell.notes = note
-        cell.backgroundColor = UIColor.customRed
         return cell
         
         

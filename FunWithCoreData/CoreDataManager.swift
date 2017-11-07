@@ -23,5 +23,19 @@ struct CoreDataManager {
         return container
         
     }()
+    
+    func fetchNotes() -> [UserNote] {
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<UserNote>(entityName: "UserNote")
+        do {
+            let notes = try context.fetch(fetchRequest)
+            
+            return notes
+            
+        } catch let fetchErr {
+            print(fetchErr)
+            return []
+        }
+    }
  
 }

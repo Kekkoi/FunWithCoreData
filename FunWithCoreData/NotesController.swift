@@ -26,26 +26,8 @@ class NotesController: UITableViewController, CreateNoteDelegate {
         navigationItem.title = "Your Notes"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
         
-        fetchNotes()
+        notes = CoreDataManager.shared.fetchNotes()
         
-    }
-    
-    func fetchNotes() {
-        let context = CoreDataManager.shared.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<UserNote>(entityName: "UserNote")
-        do {
-           let notes = try context.fetch(fetchRequest)
-                notes.forEach({ (note) in
-                    print(note.noteText ?? "")
-            })
-            
-            self.notes = notes
-            self.tableView.reloadData()
-            
-        } catch let fetchErr {
-            print(fetchErr)
-        }
-  
     }
     
     
