@@ -21,7 +21,7 @@ class NotesController: UITableViewController, CreateNoteDelegate {
         
         tableView.backgroundColor = UIColor.yellow
         tableView.separatorColor = .white
-        tableView.register(NotesCell.self, forCellReuseIdentifier: "cellID")
+        tableView.register(NotesCell.self, forCellReuseIdentifier: CellIDs.cellID.rawValue)
 
         navigationItem.title = "Your Notes"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
@@ -46,8 +46,8 @@ class NotesController: UITableViewController, CreateNoteDelegate {
     
 
     func didEditNote(note: UserNote) {
-        let row = notes.index(of: note)
-        let reloadIndexPath = IndexPath(row: row!, section: 0)
+        guard let row = notes.index(of: note) else {return}
+        let reloadIndexPath = IndexPath(row: row, section: 0)
         tableView.reloadRows(at: [reloadIndexPath], with: .middle)
     }
 

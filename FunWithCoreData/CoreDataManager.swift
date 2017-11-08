@@ -15,7 +15,7 @@ struct CoreDataManager {
     
     let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "FunWithCoreData")
-        container.loadPersistentStores { (storeDesc, error) in
+        container.loadPersistentStores { (_, error) in
             if let error = error {
                 fatalError("failed to load perStore")
             }

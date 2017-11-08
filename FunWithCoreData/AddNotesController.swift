@@ -147,7 +147,8 @@ class AddNotesController: UIViewController, UINavigationControllerDelegate, UIIm
         do {
             try context.save()
             dismiss(animated: true, completion: {
-                self.delegate?.didEditNote(note: self.note!)
+                guard let note = self.note else {return}
+                self.delegate?.didEditNote(note: note)
             })
         } catch let error {
             print("Failed to save edit", error)

@@ -8,11 +8,15 @@
 
 import UIKit
 
+enum CellIDs: String {
+    case cellID
+}
+
 extension NotesController {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellID", for: indexPath) as! NotesCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellIDs.cellID.rawValue, for: indexPath) as! NotesCell
         let note = notes[indexPath.row]
         cell.notes = note
         return cell
@@ -66,13 +70,19 @@ extension NotesController {
     
     
     func editRowFunc(action: UITableViewRowAction, indexPath: IndexPath) {
+        editFunc(indexPath: indexPath)
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        editFunc(indexPath: indexPath)
+    }
+    
+    func editFunc(indexPath: IndexPath) {
         let editNoteController = AddNotesController()
         editNoteController.delegate = self
         editNoteController.note = notes[indexPath.row]
         let navController = CustomNavController(rootViewController: editNoteController)
         present(navController, animated: true)
     }
-    
-    
     
 }
