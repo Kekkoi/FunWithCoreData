@@ -20,8 +20,6 @@ extension NotesController {
         let note = notes[indexPath.row]
         cell.notes = note
         return cell
-        
-        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
